@@ -14,8 +14,9 @@ ENV HOME /home/${NB_USER}
 WORKDIR ${HOME}
 
 USER root
-RUN apt-get update
-RUN apt-get install -y curl
+RUN apt-get update \
+    && apt-get install -y curl \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV \
     # Enable detection of running in a container
@@ -64,11 +65,11 @@ COPY ./NuGet.config ${HOME}/nuget.config
 RUN chown -R ${NB_UID} ${HOME}
 USER ${USER}
 
-#Install nteract 
-RUN pip install nteract_on_jupyter
+#Install nteract
+RUN pip install nteract_on_jupyter --no-cache
 
 # Install lastest build from main branch of Microsoft.DotNet.Interactive
-RUN dotnet tool install -g Microsoft.dotnet-interactive
+RUN dotnet tool install -g Microsoft.dotnet-interactive --no-cache
 
 ENV PATH="${PATH}:${HOME}/.dotnet/tools"
 #RUN echo "$PATH"
